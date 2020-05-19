@@ -8,7 +8,6 @@ class DishDetail extends Component {
         super(props);
 
         this.state = {
-            com: null
         }
     }
 
@@ -56,7 +55,7 @@ class DishDetail extends Component {
     }
 
     render() {
-        const dish = this.props.selectedDish;
+        const dish = this.props.selecteddish;
         if (dish == null) {
             return (<div></div>);
         }
