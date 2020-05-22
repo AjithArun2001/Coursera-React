@@ -20,7 +20,6 @@ function RenderComments({ comments }) {
     if (comments == null) {
         return (<div></div>);
     }
-    console.log(comments);
     const cmnts = comments.map(comment => {
         return (
             <li key={comment.id}>
@@ -51,7 +50,6 @@ const DishDetail = (props) => {
     if (dish == null) {
         return (<div></div>);
     }
-    console.log(props.comments);
     return (
         <div className="container">
             <div className="row">
