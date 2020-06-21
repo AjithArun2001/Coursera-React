@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Row, Modal, ModalHeader, Button, ModalBody, Label, Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
+import Loading from './LoadingComponent';
 
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => val && (val.length > len);
@@ -19,7 +20,7 @@ function RenderDish({ dish }) {
     );
 }
 
-function RenderComments({ comments }) {
+function RenderComments({ comments, addComment, dishId }) {
     if (comments == null) {
         return (<div></div>);
     }
@@ -43,6 +44,7 @@ function RenderComments({ comments }) {
             <h4> Comments </h4>
             <ul className="list-unstyled">
                 {cmnts}
+                <CommentForm dishId={dishId} addComment={addComment} />
             </ul>
         </div>
     );
@@ -66,8 +68,7 @@ class CommentForm extends Component {
 
     handleSubmit(values) {
         this.toggleModal();
-        console.log("Current state is: " + JSON.stringify(values));
-        alert("Current state is: " + JSON.stringify(values));
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
     }
 
 
@@ -143,7 +144,25 @@ class CommentForm extends Component {
 
 const DishDetail = (props) => {
     const dish = props.dish;
-    if (dish == null) {
+    if (props.isLoading) {
+        return (
+            <div className="container">
+                <div className="row">
+                    <Loading />
+                </div>
+            </div>
+        );
+    }
+    else if (props.errMess) {
+        return (
+            <div className="container">
+                <div className="row">
+                    <h4>{props.errMess}</h4>
+                </div>
+            </div>
+        );
+    }
+    else if (dish == null) {
         return (<div></div>);
     }
     return (
@@ -162,8 +181,9 @@ const DishDetail = (props) => {
                 <RenderDish dish={dish} />
             </div>
             <div>
-                <RenderComments comments={props.comments} />
-                <CommentForm />
+                <RenderComments comments={props.comments}
+                    addComment={props.addComment}
+                    dishId={props.dish.id} />
             </div>
         </div>
     );
